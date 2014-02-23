@@ -1,0 +1,43 @@
+{
+    "name": "mediamine/allocine",
+    "description": "Mediamine allocine module",
+    "license": "GPL-3.0",
+    "keywords": ["zf2", "doctrine", "media", "video", "mediamine", "allocine"],
+    "homepage": "https://github.com/draganshadow/mediamine-core",
+    "authors": [
+        {
+            "name": "draganshadow",
+            "email": "draganshdow@netsyos.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Mediamine\\Allocine\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/draganshadow/common"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/draganshadow/cron"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/draganshadow/mediamine-core"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+        "doctrine/doctrine-orm-module": "0.8.*",
+        "mediamine/core": "dev-master",
+        "netsyos/common": "dev-master",
+        "netsyos/cron": "dev-master"
+    }
+}
