@@ -1,4 +1,4 @@
 <?php
-namespace MediaMine\Allocine;
+namespace MediaMine\Module\Allocine;
 return array(
 );

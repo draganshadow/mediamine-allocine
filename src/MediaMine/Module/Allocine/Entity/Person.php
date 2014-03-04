@@ -30,7 +30,7 @@ class Person implements ArraySerializableInterface
     protected $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="MediaMine\Entity\Common\Country")
+     * @ORM\ManyToOne(targetEntity="MediaMine\Core\Entity\Common\Country")
      * @ORM\JoinColumn(name="country_ref", referencedColumnName="id", onDelete="SET NULL", unique=false, nullable=true)
      */
     protected $country;
@@ -51,7 +51,7 @@ class Person implements ArraySerializableInterface
     protected $summary;
 
     /**
-     * @ORM\ManyToMany(targetEntity="MediaMine\Entity\File\File")
+     * @ORM\ManyToMany(targetEntity="MediaMine\Core\Entity\File\File")
      * @ORM\JoinTable(name="module_allocine_person_image",
      *      joinColumns={@ORM\JoinColumn(name="person_ref", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="file_ref", referencedColumnName="id")}
