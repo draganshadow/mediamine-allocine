@@ -38,6 +38,7 @@
         "doctrine/doctrine-orm-module": "0.8.*",
         "mediamine/core": "dev-master",
         "netsyos/common": "dev-master",
-        "netsyos/cron": "dev-master"
+        "netsyos/cron": "dev-master",
+        "api-allocine/api-allocine-helper": "dev-master"
     }
 }
