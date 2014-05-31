@@ -9,6 +9,7 @@ class Module
 
         $configFiles = array(
             __DIR__ . '/../../../../config/module.config.php',
+            __DIR__ . '/../../../../config/mediamine.config.php',
         );
 
         // Merge all module config options
