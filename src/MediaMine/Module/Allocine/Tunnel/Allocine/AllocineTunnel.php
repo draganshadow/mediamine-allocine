@@ -17,7 +17,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
      * Return tunnel name
      * @return string
      */
-    function getTunnelName()
+    public function getTunnelName()
     {
         return self::ALLOCINE;
     }
@@ -30,6 +30,52 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
         return array(
             'Person' => array()
         );
+    }
+
+    public function enableTunnel() {
+        $cronRepository = $this->getEntityManager()->getRepository('Netsyos\Cron\Entity\Cron');
+
+        $result = $cronRepository->findBy(array('key' => 'AllocineTunnelCheckData'));
+        if (!count($result)) {
+            return array('error' => 1);
+        }
+        $cron = $result[0];
+        $cron->active = true;
+        $this->getEntityManager()->persist($cron);
+
+
+        $result = $cronRepository->findBy(array('key' => 'AllocineTunnelProcessTasks'));
+        if (!count($result)) {
+            return array('error' => 1);
+        }
+        $cron = $result[0];
+        $cron->active = true;
+        $this->getEntityManager()->persist($cron);
+
+        $this->flush(true);
+    }
+
+    public function disableTunnel() {
+        $cronRepository = $this->getEntityManager()->getRepository('Netsyos\Cron\Entity\Cron');
+
+        $result = $cronRepository->findBy(array('key' => 'AllocineTunnelCheckData'));
+        if (!count($result)) {
+            return array('error' => 1);
+        }
+        $cron = $result[0];
+        $cron->active = false;
+        $this->getEntityManager()->persist($cron);
+
+
+        $result = $cronRepository->findBy(array('key' => 'AllocineTunnelProcessTasks'));
+        if (!count($result)) {
+            return array('error' => 1);
+        }
+        $cron = $result[0];
+        $cron->active = false;
+        $this->getEntityManager()->persist($cron);
+
+        $this->flush(true);
     }
 
     public function checkData() {
@@ -47,7 +93,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
             $qb->select('Person')
                 ->from('MediaMine\Core\Entity\Common\Person','Person');
             $qb->where('Person.id  NOT IN ' .
-                '(SELECT p.id FROM MediaMine\Core\Entity\Tunnel\Person AS tp JOIN tp.person p WHERE tp.tunnel = \'allocine\')');
+                '(SELECT p.id FROM MediaMine\Core\Entity\Tunnel\Person AS tp JOIN tp.person p JOIN tp.tunnel t WHERE t.key = \'allocine\')');
 
             $resultSet = $qb->setParameters($params)->getQuery()->getResult();
             foreach ($resultSet as $p) {
@@ -69,13 +115,14 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
             ->from('MediaMine\Core\Entity\System\Task','Task')
             ->where('Task.groupKey = \'allocine\'')
             ->where('Task.key = \'person\'')
-            ->setMaxResults(1)
+            ->setMaxResults(2)
             ->getQuery()
             ->getResult();
         foreach ($tasks as $task) {
             $this->importPerson($task->reference);
             $this->getEntityManager()->remove($task);
-//            sleep(rand(45,120));
+            $this->getEntityManager()->flush();
+            sleep(rand(45,120));
         }
     }
 
@@ -84,6 +131,8 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
      */
     public function importPerson($id, $update = false) {
         $this->loadOptions();
+        $tunnel = $this->getRepository('System\Tunnel')->findFullByKey($this->getTunnelName());
+
         $tp = $this->getRepository('Tunnel\Person')->findFullBy(array(
             'id' => $id,
             'tunnel' => $this->getTunnelName()
@@ -115,7 +164,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
                         strip_tags(str_replace('<br />', PHP_EOL, $result['biography']))
                         : '';
                     $person->exchangeArray(array(
-                        'tunnel' => self::ALLOCINE,
+                        'tunnel' => $tunnel,
                         'person' => $sourcePerson,
                         'name' => $result['name']['given'] . ' ' . $result['name']['family'],
                         'firstName' => $result['name']['given'],
@@ -133,7 +182,8 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
                 if ($create) {
                     $person = new Person();
                     $person->exchangeArray(array(
-                        'tunnel' => self::ALLOCINE,
+                        'person' => $sourcePerson,
+                        'tunnel' => $tunnel,
                         'name' => $sourcePerson->name,
                         'rid' => $id,
                         'raw' => null,

@@ -30,22 +30,22 @@ class InstallService extends AbstractService
     );
 
     public function install() {
-
-        $cronRepository = $this->getEntityManager()->getRepository('Netsyos\Cron\Entity\Cron');
-        foreach ($this->defaultCrons as $c) {
-            $cronRepository->create($c);
-        }
-
-        $settingRepository = $this->getRepository('System\Setting');
-        foreach ($this->defaultSettings as $g => $ops) {
-            foreach ($ops as $k => $v) {
-                $settingRepository->create(array(
-                    'groupKey' => $g,
-                    'key'   => $k,
-                    'value' => $v
-                ));
-            }
-        }
-        $this->flush(true);
+//
+//        $cronRepository = $this->getEntityManager()->getRepository('Netsyos\Cron\Entity\Cron');
+//        foreach ($this->defaultCrons as $c) {
+//            $cronRepository->create($c);
+//        }
+//
+//        $settingRepository = $this->getRepository('System\Setting');
+//        foreach ($this->defaultSettings as $g => $ops) {
+//            foreach ($ops as $k => $v) {
+//                $settingRepository->create(array(
+//                    'groupKey' => $g,
+//                    'key'   => $k,
+//                    'value' => $v
+//                ));
+//            }
+//        }
+//        $this->flush(true);
     }
 }
