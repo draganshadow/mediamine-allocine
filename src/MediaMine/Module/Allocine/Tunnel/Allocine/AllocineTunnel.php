@@ -154,7 +154,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
                             str_replace(' ', '-', $result['name']['given'] . '_' . $result['name']['family']) . $ext;
                         file_put_contents($path, fopen($result['picture']['href'], 'r'));
                         $this->getServiceLocator()->get('File')->scan($this->options['imagePath'][0]);
-                        $f = $this->getRepository('File\File')->findFullBy(null, null, null, null, null, null, md5(realpath($path)));
+                        $f = $this->getRepository('File\File')->findFullBy(array('pathKey' => md5(realpath($path))));
                     } else {
                         $f = null;
                     }
