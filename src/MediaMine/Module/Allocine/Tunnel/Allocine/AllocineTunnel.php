@@ -163,6 +163,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
                     $biography = array_key_exists('biography', $result) ?
                         strip_tags(str_replace('<br />', PHP_EOL, $result['biography']))
                         : '';
+                    $biography = utf8_encode($biography);
                     $person->exchangeArray(array(
                         'tunnel' => $tunnel,
                         'person' => $sourcePerson,
