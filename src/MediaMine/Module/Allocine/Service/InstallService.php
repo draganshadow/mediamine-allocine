@@ -46,6 +46,6 @@ class InstallService extends AbstractService
 //                ));
 //            }
 //        }
-//        $this->flush(true);
+//        $this->batch(1);
     }
 }

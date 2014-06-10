@@ -52,7 +52,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
         $cron->active = true;
         $this->getEntityManager()->persist($cron);
 
-        $this->flush(true);
+        $this->batch(1);
     }
 
     public function disableTunnel() {
@@ -75,7 +75,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
         $cron->active = false;
         $this->getEntityManager()->persist($cron);
 
-        $this->flush(true);
+        $this->batch(1);
     }
 
     public function checkData() {
@@ -89,14 +89,20 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
             ->getSingleScalarResult();
         if ($nbtask == 0) {
             $params = array();
+
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('Person')
                 ->from('MediaMine\Core\Entity\Common\Person','Person');
             $qb->where('Person.id  NOT IN ' .
                 '(SELECT p.id FROM MediaMine\Core\Entity\Tunnel\Person AS tp JOIN tp.person p JOIN tp.tunnel t WHERE t.key = \'allocine\')');
+            $q = $qb->setParameters($params)->getQuery();
 
-            $resultSet = $qb->setParameters($params)->getQuery()->getResult();
-            foreach ($resultSet as $p) {
+            $iterableResult = $q->iterate();
+
+            $i = 0;
+            while (($row = $iterableResult->next()) !== false) {
+                $p = $row[0];
+
                 $task = new Task();
                 $task->exchangeArray(array(
                     'groupKey' => 'allocine',
@@ -104,7 +110,14 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
                     'reference' => $p->id
                 ));
                 $this->getEntityManager()->persist($task);
+
+                if ($i % 50 == 0) {
+                    $this->getEntityManager()->flush();
+                    $this->getEntityManager()->clear();
+                }
+                $i++;
             }
+
         }
         $this->getEntityManager()->flush();
     }
