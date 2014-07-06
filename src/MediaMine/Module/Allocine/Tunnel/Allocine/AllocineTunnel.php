@@ -155,7 +155,7 @@ class AllocineTunnel extends AbstractTunnel implements PersonImport
         if ($update || $create) {
             $personRepo = $this->getRepository('Common\Person');
             $sourcePerson = $personRepo->find($id);
-            $alloHelper = new \AlloHelper();
+            $alloHelper = $this->getServiceLocator()->get('AlloHelper');
             $result = $alloHelper->search($sourcePerson->name, 1, 10, false, array('person'));
             if ($result->totalResults) {
                 $persons = $result->person->getArray();

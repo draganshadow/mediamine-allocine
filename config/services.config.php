@@ -16,6 +16,7 @@ return array(
             },
         'AlloHelper' => function ($sm) {
                 $helper = new \AlloHelper();
+                $helper->setUtf8Decode(false);
                 return $helper;
             },
     ),
