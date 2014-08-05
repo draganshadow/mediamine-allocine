@@ -19,17 +19,12 @@ class InstallService extends AbstractService
             'callback' => 'checkData',
             'arguments' => array(),
             'active' => false
-        ),
-        array('key' => 'AllocineTunnelProcessTasks',
-            'frequency' => '*/15 * * * *',
-            'service' => 'AllocineTunnel',
-            'callback' => 'processTasks',
-            'arguments' => array(),
-            'active' => false
-        ),
+        )
     );
 
     public function install() {
+        //TODO create images folder
+        mkdir('data/module/allocine/images', 0777, true);
 //
 //        $cronRepository = $this->getEntityManager()->getRepository('Netsyos\Cron\Entity\Cron');
 //        foreach ($this->defaultCrons as $c) {

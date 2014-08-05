@@ -3,6 +3,14 @@ namespace MediaMine\Module\Allocine;
 
 return array(
     'mediamine' => array(
+        'actions' => array(
+            'searchAllocine' => array(
+                'service' => 'AllocineTunnel',
+                'method' => 'checkData',
+                'params' => array(),
+                'roles' => array()
+            ),
+        ),
         'modules' => array(
             'allocine' => array(
                 'module' => array(
@@ -24,14 +32,7 @@ return array(
                         'callback' => 'checkData',
                         'arguments' => array(),
                         'active' => false
-                    ),
-                    array('key' => 'AllocineTunnelProcessTasks',
-                        'frequency' => '*/15 * * * *',
-                        'service' => 'AllocineTunnel',
-                        'callback' => 'processTasks',
-                        'arguments' => array(),
-                        'active' => false
-                    ),
+                    )
                 ),
                 'settings' => array(
                     'allocine' => array(
